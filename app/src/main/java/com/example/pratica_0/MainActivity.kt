@@ -60,7 +60,7 @@ fun HomePage(modifier: Modifier = Modifier) {
         horizontalAlignment = CenterHorizontally
     ) {
         Text(
-            text = "Boas vindas!",
+            text = "Boas-vindas!",
             fontSize = 24.sp
         )
 

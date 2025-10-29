@@ -125,6 +125,7 @@ fun RegisterPage(modifier: Modifier = Modifier) {
             ) {
                 Text("Limpar")
             }
+            Spacer(modifier = modifier.size(14.dp))
             Button(
                 onClick = { activity.finish() }
             ) {
