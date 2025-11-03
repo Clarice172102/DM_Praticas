@@ -1,4 +1,4 @@
-package com.example.pratica_0
+package com.example.WeatherApp
 
 import android.app.Activity
 import android.content.Intent
@@ -31,15 +31,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.pratica_0.ui.theme.Pratica_0Theme
+import com.example.WeatherApp.ui.theme.WeatherAppTheme
 
 class RegisterActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            Pratica_0Theme {
+            WeatherAppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     RegisterPage(
                         modifier = Modifier.padding(innerPadding)

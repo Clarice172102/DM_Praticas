@@ -1,4 +1,4 @@
-package com.example.pratica_0.ui
+package com.example.WeatherApp.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column

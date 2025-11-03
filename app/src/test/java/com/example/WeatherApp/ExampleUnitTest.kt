@@ -1,4 +1,4 @@
-package com.example.pratica_0
+package com.example.WeatherApp
 
 import org.junit.Test
 

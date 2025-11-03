@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.pratica_0"
+    namespace = "com.example.WeatherApp"
     compileSdk = 36
 
     defaultConfig {
