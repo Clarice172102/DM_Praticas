@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.WeatherApp.ui.theme.WeatherAppTheme
 
 class RegisterActivity : ComponentActivity() {
@@ -66,7 +67,10 @@ fun RegisterPage(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = CenterHorizontally
     ) {
-
+        Text(
+            text = "Cadastre-se!",
+            fontSize = 24.sp
+        )
         OutlinedTextField(
             value = name,
             label = { Text(text = "Digite o seu nome") },
