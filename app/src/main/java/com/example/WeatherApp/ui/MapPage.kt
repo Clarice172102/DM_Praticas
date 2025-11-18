@@ -73,7 +73,7 @@ fun  MapPage(
             state = MarkerState(position = caruaru),
             title = "Caruaru",
             snippet = "Marcador em Caruaru",
-            icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)
+            icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA)
         )
 
         Marker(
