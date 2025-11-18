@@ -4,7 +4,9 @@
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
     <application
+        android:name=".WeatherApp"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -14,6 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Pratica_0">
         <activity
+            android:launchMode="singleTask"
             android:name=".RegisterActivity"
             android:exported="false"
             android:label="@string/title_activity_register"
