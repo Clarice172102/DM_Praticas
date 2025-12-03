@@ -1,28 +1,65 @@
 package com.example.WeatherApp.model
 
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.example.WeatherApp.db.fb.FBCity
+import com.example.WeatherApp.db.fb.FBDatabase
+import com.example.WeatherApp.db.fb.FBUser
+import com.example.WeatherApp.db.fb.toFBCity
 import com.google.android.gms.maps.model.LatLng
 
-class MainViewModel : ViewModel() {
-    private val _cities = getCitiesList().toMutableStateList()
+class MainViewModel (private val db: FBDatabase): ViewModel(),
+    FBDatabase.Listener {
+    private val _cities = mutableStateListOf<City>()
+    val cities
+        get() = _cities.toList()
 
     private val _user = mutableStateOf<User?> (null)
     val user : User?
         get() = _user.value
-    val cities
-        get() = _cities.toList()
+
+    init {
+        db.setListener(this)
+    }
+
     fun remove(city: City) {
-        _cities.remove(city)
+        db.remove(city.toFBCity())
     }
-    fun add(name: String) {
-        _cities.add(City(name = name))
+
+    fun add(name: String, location : LatLng? = null) {
+        db.add(City(name = name, location = location).toFBCity())
     }
-    private fun getCitiesList() = List(20) { i ->
-        City(name = "Cidade $i", weather = "Carregando clima...")
+
+    override fun onUserLoaded(user: FBUser) {
+        _user.value = user.toUser()
     }
-    fun add(name: String, location: LatLng? = null) {
-        _cities.add(City(name = name, location = location))
+
+    override fun onUserSignOut() {
+        //TODO("Not yet implemented")
+    }
+
+    override fun onCityAdded(city: FBCity) {
+        _cities.add(city.toCity())
+    }
+
+    override fun onCityUpdated(city: FBCity) {
+        //TODO("Not yet implemented")
+    }
+
+    override fun onCityRemoved(city: FBCity) {
+        _cities.remove(city.toCity())
+    }
+}
+
+class MainViewModelFactory(private val db : FBDatabase) :
+    ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
+            return MainViewModel(db) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
