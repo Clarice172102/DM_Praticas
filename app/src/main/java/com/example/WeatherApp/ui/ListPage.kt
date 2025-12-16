@@ -37,6 +37,8 @@ import com.example.WeatherApp.model.City
 import androidx.compose.foundation.lazy.items
 import com.example.WeatherApp.MainActivity
 import com.example.WeatherApp.model.MainViewModel
+import com.example.WeatherApp.model.Weather
+import com.example.WeatherApp.ui.nav.Route
 
 @Composable
 fun  ListPage(
@@ -50,8 +52,8 @@ fun  ListPage(
             .fillMaxSize()
             .padding(8.dp)
     ) {
-        items(cityList, key = { it.name }) { city ->
-            CityItem(city = city, onClose = {
+        items(items = cityList, key = { it.name } ) { city ->
+            CityItem(city = city, weather = viewModel.weather(city.name), onClose = {
                 viewModel.remove(city)
                 Toast.makeText(activity, " ${city.name} removida!", Toast.LENGTH_LONG).show()
                 activity.startActivity(
@@ -60,12 +62,8 @@ fun  ListPage(
                     )
                 )
             }, onClick = {
-                Toast.makeText(activity, " ${city.name} selecionada!", Toast.LENGTH_LONG).show()
-                activity.startActivity(
-                    Intent(activity, MainActivity::class.java).setFlags(
-                        FLAG_ACTIVITY_SINGLE_TOP
-                    )
-                )
+                viewModel.city = city.name
+                viewModel.page = Route.Home
             })
         }
     }
@@ -74,10 +72,12 @@ fun  ListPage(
 @Composable
 fun CityItem(
     city: City,
+    weather: Weather,
     onClick: () -> Unit,
     onClose: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val desc = if (weather == Weather.LOADING) "Carregando clima..." else weather.desc
     Row(
         modifier = modifier.fillMaxWidth().padding(8.dp).clickable { onClick() },
         verticalAlignment = Alignment.CenterVertically
@@ -92,7 +92,7 @@ fun CityItem(
                 text = city.name,
                 fontSize = 24.sp)
             Text(modifier = Modifier,
-                text = city.weather?:"Carregando clima...",
+                text = desc,
 
                 fontSize = 16.sp)
 
