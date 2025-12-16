@@ -68,9 +68,6 @@ class MainViewModel (private val db: FBDatabase,
         db.remove(city.toFBCity())
     }
 
-    fun add(name: String, location : LatLng? = null) {
-        db.add(City(name = name, location = location).toFBCity())
-    }
 
     override fun onUserLoaded(user: FBUser) {
         _user.value = user.toUser()
