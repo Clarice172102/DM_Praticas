@@ -30,6 +30,9 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.ui.res.painterResource
+import coil.compose.AsyncImage
+import com.example.WeatherApp.R
 import com.example.WeatherApp.model.Forecast
 import com.example.WeatherApp.model.MainViewModel
 import java.text.DecimalFormat
@@ -50,9 +53,12 @@ fun HomePage(modifier: Modifier = Modifier.Companion, viewModel: MainViewModel) 
             }
         } else {
             Row {
-                Icon( imageVector = Icons.Filled.AccountBox,
-                    contentDescription = "Localized description",
-                    modifier = Modifier.size(150.dp) )
+                AsyncImage( // Substitui o Icon
+                    model = viewModel.weather(viewModel.city!!).imgUrl,
+                    modifier = Modifier.size(140.dp),
+                    error = painterResource(id = R.drawable.loading),
+                    contentDescription = "Imagem"
+                )
                 Column {
                     Spacer(modifier = Modifier.size(12.dp))
                     Text( text = viewModel.city ?: "Selecione uma cidade...",
@@ -94,9 +100,12 @@ fun ForecastItem(
             .clickable( onClick = { onClick(forecast) }),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon( imageVector = Icons.Filled.LocationOn,
-            contentDescription = "Localized description",
-            modifier = Modifier.size(48.dp) )
+        AsyncImage(
+            model = forecast.imgUrl,
+            modifier = Modifier.size(70.dp),
+            error = painterResource(id = R.drawable.loading),
+            contentDescription = "Imagem"
+        )
         Spacer(modifier = Modifier.size(16.dp))
         Column {
             Text(modifier = Modifier, text = forecast.weather, fontSize = 24.sp)
