@@ -45,6 +45,9 @@ class MainViewModel (private val db: FBDatabase,
         db.setListener(this)
     }
 
+    val cityMap : Map<String, City>
+        get() = _cities.toMap()
+
     fun forecast (name: String) = _forecast.getOrPut(name) {
         loadForecast(name)
         emptyList() // return
@@ -66,6 +69,10 @@ class MainViewModel (private val db: FBDatabase,
     }
     fun remove(city: City) {
         db.remove(city.toFBCity())
+    }
+
+    fun update(city: City) {
+        db.update(city.toFBCity())
     }
 
 

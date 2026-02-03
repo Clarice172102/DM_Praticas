@@ -3,6 +3,7 @@ package com.example.WeatherApp.ui
 import android.app.Activity
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP
+import android.widget.Space
 import android.widget.Toast
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
@@ -35,6 +36,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.WeatherApp.model.City
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.ui.res.painterResource
 import coil.compose.AsyncImage
 import com.example.WeatherApp.MainActivity
@@ -48,6 +51,7 @@ fun  ListPage(
     modifier: Modifier = Modifier,
     viewModel: MainViewModel
 ) {
+
     val cityList = viewModel.cities
     val activity = LocalActivity.current as Activity // Para os Toasts
     LazyColumn(
@@ -80,6 +84,12 @@ fun CityItem(
     onClose: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val icon =
+        if (city?.isMonitored == true)
+            Icons.Filled.Notifications
+        else
+            Icons.Outlined.Notifications
+
     val desc = if (weather == Weather.LOADING) "Carregando clima..." else weather.desc
     Row(
         modifier = modifier.fillMaxWidth().padding(8.dp).clickable { onClick() },
@@ -93,9 +103,21 @@ fun CityItem(
         )
         Spacer(modifier = Modifier.size(12.dp))
         Column(modifier = modifier.weight(1f)) {
-            Text(modifier = Modifier,
-                text = city.name,
-                fontSize = 24.sp)
+
+            Row {
+                Text(modifier = Modifier,
+                    text = city.name,
+                    fontSize = 24.sp)
+
+                Spacer (modifier = Modifier.size(8.dp))
+
+                Icon(
+                    imageVector = icon,
+                    contentDescription = "Status de Monitoramento",
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+
             Text(modifier = Modifier,
                 text = desc,
 
