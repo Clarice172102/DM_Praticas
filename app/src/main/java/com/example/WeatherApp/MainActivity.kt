@@ -40,8 +40,10 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.WeatherApp.api.WeatherService
 import com.example.WeatherApp.db.fb.FBDatabase
+import com.example.WeatherApp.db.local.LocalDatabase
 import com.example.WeatherApp.model.MainViewModelFactory
 import com.example.WeatherApp.monitor.ForecastMonitor
+import com.example.WeatherApp.repo.Repository
 import com.example.WeatherApp.ui.nav.Route
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
@@ -57,9 +59,14 @@ class MainActivity : ComponentActivity() {
             val weatherService = remember { WeatherService(this) }
             val forecastMonitor = remember { ForecastMonitor (this) }
 
+            val currentUser = Firebase.auth.currentUser
+            val uid = currentUser?.uid ?: "default_user"
+
+            val localDB = remember (uid) { LocalDatabase(this, "db_$uid")}
+            val repository = remember(uid) { Repository(fbDB, localDB) }
 
             val viewModel : MainViewModel = viewModel(
-                factory = MainViewModelFactory(fbDB, weatherService, forecastMonitor)
+                factory = MainViewModelFactory(repository, weatherService, forecastMonitor)
             )
 
             DisposableEffect(Unit) {
