@@ -38,7 +38,9 @@ import com.example.WeatherApp.model.City
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.res.painterResource
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.example.WeatherApp.MainActivity
 import com.example.WeatherApp.R
@@ -47,26 +49,35 @@ import com.example.WeatherApp.model.Weather
 import com.example.WeatherApp.ui.nav.Route
 
 @Composable
-fun  ListPage(
-    modifier: Modifier = Modifier,
-    viewModel: MainViewModel
+fun ListPage(modifier: Modifier = Modifier,
+             viewModel: MainViewModel
 ) {
+    val cityMap = viewModel.cities.collectAsStateWithLifecycle(emptyMap()).value
+    val cityList = cityMap.values.toList().sortedBy { it.name }
+    val weatherMap = viewModel.weather.collectAsStateWithLifecycle(emptyMap()).value
 
-    val cityList = viewModel.cities
     val activity = LocalActivity.current as Activity // Para os Toasts
+
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
             .padding(8.dp)
     ) {
         items(items = cityList, key = { it.name } ) { city ->
-            CityItem(city = city, weather = viewModel.weather(city.name), onClose = {
-                viewModel.remove(city)
-                Toast.makeText(activity, " ${city.name} removida!", Toast.LENGTH_LONG).show()
-            }, onClick = {
-                viewModel.city = city.name
-                viewModel.page = Route.Home
-            })
+            LaunchedEffect(city.name) {
+                viewModel.loadWeather(city.name)
+            }
+
+            val weather = weatherMap[city.name]?:Weather.LOADING;
+
+            CityItem(city = city, weather = weather,
+                onClick = {
+                    viewModel.city = city.name
+                    viewModel.page = Route.Home
+                }, onClose = {
+                    viewModel.remove(city)
+                    Toast.makeText(activity, "${city.name} Removida!", Toast.LENGTH_LONG).show()
+                })
         }
     }
 }
@@ -79,18 +90,18 @@ fun CityItem(
     onClose: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val desc = if (weather == Weather.LOADING) "Carregando clima..." else weather.desc
     val icon =
-        if (city?.isMonitored == true)
+        if (city.isMonitored)
             Icons.Filled.Notifications
         else
             Icons.Outlined.Notifications
 
-    val desc = if (weather == Weather.LOADING) "Carregando clima..." else weather.desc
     Row(
         modifier = modifier.fillMaxWidth().padding(8.dp).clickable { onClick() },
         verticalAlignment = Alignment.CenterVertically
     ) {
-        AsyncImage(
+        AsyncImage( // Substitui o Icon(...)
             model = weather.imgUrl,
             modifier = Modifier.size(75.dp),
             error = painterResource(id = R.drawable.loading),
@@ -98,27 +109,21 @@ fun CityItem(
         )
         Spacer(modifier = Modifier.size(12.dp))
         Column(modifier = modifier.weight(1f)) {
-
-            Row {
-                Text(modifier = Modifier,
-                    text = city.name,
-                    fontSize = 24.sp)
-
-                Spacer (modifier = Modifier.size(8.dp))
-
-                Icon(
-                    imageVector = icon,
-                    contentDescription = "Status de Monitoramento",
-                    modifier = Modifier.size(20.dp)
-                )
-            }
-
+            Text(modifier = Modifier,
+                text = city.name,
+                fontSize = 24.sp)
             Text(modifier = Modifier,
                 text = desc,
-
                 fontSize = 16.sp)
 
         }
+        Icon(
+            imageVector = icon,
+            contentDescription = "Monitorada",
+            modifier = Modifier
+                .size(24.dp)
+                .padding(end = 8.dp)
+        )
         IconButton(onClick = onClose) {
             Icon(Icons.Filled.Close, contentDescription = "Close")
         }
